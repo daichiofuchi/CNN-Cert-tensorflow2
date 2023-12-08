@@ -14,7 +14,8 @@ import numpy as np
 from cnn_bounds_full import run as run_cnn_full
 from cnn_bounds_full_core import run as run_cnn_full_core
 from Attacks.cw_attack import cw_attack
-from tensorflow.contrib.keras.api.keras import backend as K
+from tensorflow.keras import backend as K
+
 
 import time as timing
 import datetime
