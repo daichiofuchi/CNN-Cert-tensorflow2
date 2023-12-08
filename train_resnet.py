@@ -10,12 +10,12 @@ Copyright (C) 2018, Akhilan Boopathy <akhilan@mit.edu>
                     Luca Daniel <dluca@mit.edu>
 """
 import numpy as np
-from tensorflow.contrib.keras.api.keras.models import Sequential, Model
-from tensorflow.contrib.keras.api.keras.layers import Input, Dense, Activation, Flatten, Lambda, Conv2D, Add, AveragePooling2D, BatchNormalization, Lambda
-from tensorflow.contrib.keras.api.keras.models import load_model
-from tensorflow.contrib.keras.api.keras import backend as K
-from tensorflow.contrib.keras.api.keras.optimizers import SGD, Adam
-from tensorflow.python.keras.engine.base_layer import Layer
+from tensorflow.keras.models import Sequential, Model, load_model
+from tensorflow.keras.layers import Input, Dense, Activation, Flatten, Lambda, Conv2D, Add, AveragePooling2D, BatchNormalization
+from tensorflow.keras import backend as K
+from tensorflow.keras.optimizers import SGD, Adam
+from tensorflow.keras.layers import Layer
+
 
 import tensorflow as tf
 from setup_mnist import MNIST

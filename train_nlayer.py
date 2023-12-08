@@ -14,12 +14,12 @@ contained in the LICENCE file in this directory.
 """
 
 import numpy as np
-from tensorflow.contrib.keras.api.keras.models import Sequential
-from tensorflow.contrib.keras.api.keras.layers import Dense, Dropout, Activation, Flatten, Lambda
-from tensorflow.contrib.keras.api.keras.layers import Conv2D, MaxPooling2D
-from tensorflow.contrib.keras.api.keras.models import load_model
-from tensorflow.contrib.keras.api.keras import backend as K
-from tensorflow.contrib.keras.api.keras.optimizers import SGD, Adam
+from tensorflow.keras.models import Sequential, Model, load_model
+from tensorflow.keras.layers import Input, Dense, Activation, Flatten, Lambda, Conv2D, Add, AveragePooling2D, BatchNormalization
+from tensorflow.keras import backend as K
+from tensorflow.keras.optimizers import SGD, Adam
+from tensorflow.keras.layers import Layer
+
 import tensorflow as tf
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
