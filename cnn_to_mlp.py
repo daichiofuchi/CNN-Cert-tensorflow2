@@ -11,11 +11,10 @@ Copyright (C) 2018, Akhilan Boopathy <akhilan@mit.edu>
 """
 
 from tensorflow.keras.models import load_model
-from tensorflow.contrib.keras.api.keras.models import Sequential
-from tensorflow.contrib.keras.api.keras.layers import Dense, Activation, Flatten, Conv2D, Lambda
-from tensorflow.contrib.keras.api.keras.callbacks import LambdaCallback
-from tensorflow.contrib.keras.api.keras.optimizers import SGD, Adam
-from tensorflow.contrib.keras.api.keras import backend as K
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Flatten, Conv2D, Lambda
+from tensorflow.keras.optimizers import SGD, Adam
+
 
 import numpy as np
 from setup_mnist import MNIST
