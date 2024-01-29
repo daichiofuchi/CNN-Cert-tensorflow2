@@ -10,12 +10,11 @@ Copyright (C) 2018, Akhilan Boopathy <akhilan@mit.edu>
                     Luca Daniel <dluca@mit.edu>
 """
 import numpy as np
-from tensorflow.keras.models import Sequential, Model, load_model
-from tensorflow.keras.layers import Input, Dense, Activation, Flatten, Lambda, Conv2D, Add, AveragePooling2D, BatchNormalization
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Activation, Flatten, Lambda, Conv2D, BatchNormalization
+from tensorflow.keras.models import load_model
 from tensorflow.keras import backend as K
-from tensorflow.keras.optimizers import SGD, Adam
-from tensorflow.keras.layers import Layer
-
+from tensorflow.keras.optimizers import Adam
 
 import tensorflow as tf
 from setup_mnist import MNIST
@@ -49,7 +48,7 @@ def train(data, file_name, filters, kernels, num_epochs=50, batch_size=128, trai
 
     # define the loss function which is the cross entropy between prediction and true label
     def fn(correct, predicted):
-        return tf.nn.softmax_cross_entropy_with_logits(labels=correct,
+        return tf.nn.softmax_cross_entropy_with_logits(labels=tf.stop_gradient(correct),
                                                        logits=predicted/train_temp)
 
     # initiate the Adam optimizer

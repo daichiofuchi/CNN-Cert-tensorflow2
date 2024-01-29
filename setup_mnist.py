@@ -11,9 +11,13 @@ import os
 import pickle
 import gzip
 import urllib.request
+
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Flatten, Conv2D, Lambda
-from tensorflow.keras.optimizers import SGD, Adam
+from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten
+from tensorflow.keras.layers import Conv2D, MaxPooling2D
+from tensorflow.keras.layers import Lambda
+from tensorflow.keras.models import load_model
+from tensorflow.keras import backend as K
 
 def extract_data(filename, num_images):
     with gzip.open(filename) as bytestream:
@@ -151,7 +155,7 @@ class MadryMNISTModel(object):
         def predict(self, data):
             if self.input is None:
                 print("creating a new graph for inference")
-                self.input = tf.placeholder(dtype=tf.float32, shape = [None, 28, 28, 1])
+                self.input = tf.compat.v1.placeholder(dtype=tf.float32, shape = [None, 28, 28, 1])
                 self.output = self.predict_gen(self.input, "Inference_MadryMNIST")
             return self.sess.run([self.output], feed_dict = {self.input: data})
             
@@ -169,9 +173,9 @@ class MadryMNISTModel(object):
         self.model = self.PredictModel(self.sess, self.predict)
 
     def predict(self, data, name_prefix = "MadryMNIST"):
-        with tf.name_scope(name_prefix):
+        with tf.compat.v1.name_scope(name_prefix):
             # keep a record of the variables we created
-            start_vars = set(x.name for x in tf.global_variables())
+            start_vars = set(x.name for x in tf.compat.v1.global_variables())
 
             # our data range is [-0.5,0.5], Madry's model is [0,1]
             self.x_input = data + 0.5
@@ -209,7 +213,7 @@ class MadryMNISTModel(object):
             else:
                 output = pre_softmax
         
-            end_vars = tf.global_variables()
+            end_vars = tf.compat.v1.global_variables()
             new_vars = [x for x in end_vars if x.name not in start_vars]
 
             # remove the scope name during reload
@@ -218,7 +222,7 @@ class MadryMNISTModel(object):
                 var_trans_dict[var.op.name.replace(name_prefix + '/', '')] = var
 
             # restore model
-            saver = tf.train.Saver(var_list=var_trans_dict)
+            saver = tf.compat.v1.train.Saver(var_list=var_trans_dict)
             saver.restore(self.sess, self.model_file)
             # self.model.output = output
             # self.model.input = data
@@ -227,7 +231,7 @@ class MadryMNISTModel(object):
 
     @staticmethod
     def _weight_variable(shape):
-        initial = tf.truncated_normal(shape, stddev=0.1)
+        initial = tf.random.truncated_normal(shape, stddev=0.1)
         return tf.Variable(initial)
 
     @staticmethod
@@ -237,11 +241,11 @@ class MadryMNISTModel(object):
 
     @staticmethod
     def _conv2d(x, W):
-        return tf.nn.conv2d(x, W, strides=[1,1,1,1], padding='SAME')
+        return tf.nn.conv2d(x, filters=W, strides=[1,1,1,1], padding='SAME')
 
     @staticmethod
     def _max_pool_2x2( x):
-        return tf.nn.max_pool(x,
+        return tf.nn.max_pool2d(input=x,
               ksize = [1,2,2,1],
               strides=[1,2,2,1],
               padding='SAME')

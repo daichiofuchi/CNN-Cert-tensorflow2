@@ -158,8 +158,8 @@ def make_defend_quilt(sess):
     TILE_OVERLAP = 2
     tile_skip = TILE_SIZE - TILE_OVERLAP
     K = 10
-    db_tensor = tf.placeholder(tf.float32, quilt_db_reshaped.shape)
-    query_imgs = tf.placeholder(tf.float32, (TILE_SIZE * TILE_SIZE * 3, None))
+    db_tensor = tf.compat.v1.placeholder(tf.float32, quilt_db_reshaped.shape)
+    query_imgs = tf.compat.v1.placeholder(tf.float32, (TILE_SIZE * TILE_SIZE * 3, None))
     norms = tf.reduce_sum(tf.square(db_tensor), axis=1)[:, tf.newaxis] \
                     - 2*tf.matmul(db_tensor, query_imgs)
     _, topk_indices = tf.nn.top_k(-tf.transpose(norms), k=K, sorted=False)
@@ -311,13 +311,13 @@ def make_defend_quilt(sess):
 
 # x is a square image (3-tensor)
 def defend_crop(x, crop_size=90, ensemble_size=30):
-    x_size = tf.to_float(x.shape[1])
+    x_size = tf.cast(x.shape[1], dtype=tf.float32)
     frac = crop_size/x_size
     start_fraction_max = (x_size - crop_size)/x_size
     def randomizing_crop(x):
-        start_x = tf.random_uniform((), 0, start_fraction_max)
-        start_y = tf.random_uniform((), 0, start_fraction_max)
+        start_x = tf.random.uniform((), 0, start_fraction_max)
+        start_y = tf.random.uniform((), 0, start_fraction_max)
         return tf.image.crop_and_resize([x], boxes=[[start_y, start_x, start_y+frac, start_x+frac]],
-                                 box_ind=[0], crop_size=[crop_size, crop_size])
+                                 box_indices=[0], crop_size=[crop_size, crop_size])
 
     return tf.concat([randomizing_crop(x) for _ in range(ensemble_size)], axis=0)

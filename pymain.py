@@ -16,7 +16,6 @@ from cnn_bounds_full_core import run as run_cnn_full_core
 from Attacks.cw_attack import cw_attack
 from tensorflow.keras import backend as K
 
-
 import time as timing
 import datetime
 

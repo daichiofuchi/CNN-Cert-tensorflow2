@@ -16,11 +16,11 @@ from setup_mnist import MNIST
 from setup_cifar import CIFAR
 from setup_tinyimagenet import tinyImagenet
 
-from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, GlobalAveragePooling2D, Lambda
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, AveragePooling2D, InputLayer, BatchNormalization, Reshape
+from tensorflow.keras.models import load_model
 from tensorflow.keras import backend as K
-
 import tensorflow as tf
 from utils import generate_data
 import time
@@ -30,7 +30,7 @@ linear_bounds = None
 import random
 
 def fn(correct, predicted):
-        return tf.nn.softmax_cross_entropy_with_logits(labels=correct,
+        return tf.nn.softmax_cross_entropy_with_logits(labels=tf.stop_gradient(correct),
                                                        logits=predicted)
 #CNN model class
 class CNNModel:
@@ -467,7 +467,7 @@ def warmup(model, x, eps_0, p_n, fn):
 #Main function to compute CNN-Cert bound
 def run(file_name, n_samples, p_n, q_n, activation = 'relu', cifar=False, tinyimagenet=False):
     np.random.seed(1215)
-    tf.set_random_seed(1215)
+    tf.compat.v1.set_random_seed(1215)
     random.seed(1215)
     keras_model = load_model(file_name, custom_objects={'fn':fn, 'tf':tf})
     if tinyimagenet:

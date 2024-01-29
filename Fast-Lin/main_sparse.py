@@ -154,9 +154,9 @@ if __name__ == "__main__":
                     if not os.path.isfile(modelfile):
                         raise(RuntimeError("cannot find model file"))
 
-    config = tf.ConfigProto()
+    config = tf.compat.v1.ConfigProto()
     config.gpu_options.allow_growth = True
-    with tf.Session(config=config) as sess:   
+    with tf.compat.v1.Session(config=config) as sess:   
         if args.model == "mnist":
             data = MNIST()
             if args.filename:
@@ -177,7 +177,7 @@ if __name__ == "__main__":
 
         random.seed(1215)
         np.random.seed(1215)
-        tf.set_random_seed(1215)
+        tf.compat.v1.set_random_seed(1215)
 
         # the weights and bias are saved in lists: weights and bias
         # weights[i-1] gives the ith layer of weight and so on

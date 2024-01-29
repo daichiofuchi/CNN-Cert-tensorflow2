@@ -14,16 +14,16 @@ contained in the LICENCE file in this directory.
 """
 
 import numpy as np
-from tensorflow.keras.models import Sequential, Model, load_model
-from tensorflow.keras.layers import Input, Dense, Activation, Flatten, Lambda, Conv2D, Add, AveragePooling2D, BatchNormalization
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, Lambda
+from tensorflow.keras.layers import Conv2D, MaxPooling2D
+from tensorflow.keras.models import load_model
 from tensorflow.keras import backend as K
 from tensorflow.keras.optimizers import SGD, Adam
-from tensorflow.keras.layers import Layer
-
 import tensorflow as tf
-config = tf.ConfigProto()
+config = tf.compat.v1.ConfigProto()
 config.gpu_options.allow_growth = True
-K.set_session(tf.Session(config=config))
+K.set_session(tf.compat.v1.Session(config=config))
 
 import tensorflow as tf
 from setup_mnist import MNIST
@@ -75,7 +75,7 @@ def train_cnn_7layer(data, file_name, params, num_epochs=10, batch_size=256, tra
 
     # define the loss function which is the cross entropy between prediction and true label
     def fn(correct, predicted):
-        return tf.nn.softmax_cross_entropy_with_logits(labels=correct,
+        return tf.nn.softmax_cross_entropy_with_logits(labels=tf.stop_gradient(correct),
                                                        logits=predicted/train_temp)
 
     if optimizer_name == "sgd":

@@ -15,8 +15,11 @@ import pickle
 import urllib.request
 
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Flatten, Conv2D, Lambda
-from tensorflow.keras.optimizers import SGD, Adam
+from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten
+from tensorflow.keras.layers import Conv2D, MaxPooling2D
+from tensorflow.keras.layers import Lambda
+from tensorflow.keras.models import load_model
+from tensorflow.keras import backend as K
 
 def load_batch(fpath, label_key='labels'):
     f = open(fpath, 'rb')

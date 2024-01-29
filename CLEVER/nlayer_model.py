@@ -13,11 +13,11 @@ import gzip
 import argparse
 import urllib.request
 
-from tensorflow.contrib.keras.api.keras.models import Sequential
-from tensorflow.contrib.keras.api.keras.layers import Dense, Dropout, Activation, Flatten
-from tensorflow.contrib.keras.api.keras.layers import Conv2D, MaxPooling2D
-from tensorflow.contrib.keras.api.keras.models import load_model
-from tensorflow.contrib.keras.api.keras import backend as K
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten
+from tensorflow.keras.layers import Conv2D, MaxPooling2D
+from tensorflow.keras.models import load_model
+from tensorflow.keras import backend as K
 
 
 class NLayerModel:
@@ -74,7 +74,7 @@ if __name__ == "__main__":
     nlayers = len(args.layer_parameters) + 1
 
     import tensorflow as tf
-    with tf.Session() as sess:
+    with tf.compat.v1.Session() as sess:
         # if a model file is not specified, use a manual override
         if not args.modelfile:
             args.modelfile = "models/"+args.model+"_"+str(nlayers)+"layer_relu"

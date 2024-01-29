@@ -5,7 +5,7 @@ from setup_mnist import MNIST
 import tensorflow as tf
 
 def fn(correct, predicted):
-        return tf.nn.softmax_cross_entropy_with_logits(labels=correct,
+        return tf.nn.softmax_cross_entropy_with_logits(labels=tf.stop_gradient(correct),
                                                        logits=predicted)
 
 def get_weights_biases(file_name):

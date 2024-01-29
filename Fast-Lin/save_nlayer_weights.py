@@ -12,11 +12,11 @@ import gzip
 import argparse
 import urllib.request
 
-from tensorflow.contrib.keras.api.keras.models import Sequential
-from tensorflow.contrib.keras.api.keras.layers import Dense, Dropout, Activation, Flatten, GlobalAveragePooling2D, Lambda
-from tensorflow.contrib.keras.api.keras.layers import Conv2D, MaxPooling2D, AveragePooling2D, InputLayer, BatchNormalization, Reshape
-from tensorflow.contrib.keras.api.keras.models import load_model
-from tensorflow.contrib.keras.api.keras import backend as K
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, GlobalAveragePooling2D, Lambda
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, AveragePooling2D, InputLayer, BatchNormalization, Reshape
+from tensorflow.keras.models import load_model
+from tensorflow.keras import backend as K
 import tensorflow as tf
 
 
@@ -61,7 +61,7 @@ class NLayerModel:
         return self.model(data)
 
 def loss(correct, predicted):
-        return tf.nn.softmax_cross_entropy_with_logits(labels=correct,
+        return tf.nn.softmax_cross_entropy_with_logits(labels=tf.stop_gradient(correct),
                                                        logits=predicted)
 
 class CNNModel:
@@ -176,7 +176,7 @@ if __name__ == "__main__":
     nlayers = len(args.layer_parameters) + 1
 
     import tensorflow as tf
-    with tf.Session() as sess:
+    with tf.compat.v1.Session() as sess:
         # if a model file is not specified, use a manual override
         if not args.modelfile:
             args.modelfile = "models/"+args.model+"_"+str(nlayers)+"layer_"+args.activation

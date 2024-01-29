@@ -8,22 +8,22 @@ from Attacks.l1_attack import EADL1
 from setup_mnist import MNIST
 from setup_cifar import CIFAR
 from setup_tinyimagenet import tinyImagenet
-from tensorflow.contrib.keras.api.keras.models import load_model, Sequential
+from tensorflow.keras.models import load_model, Sequential
 from utils import generate_data
-from tensorflow.contrib.keras.api.keras import backend as K
+from tensorflow.keras import backend as K
 import time as timer
 import tensorflow as tf
 import random
 from train_resnet import *
 
 def loss(correct, predicted):
-        return tf.nn.softmax_cross_entropy_with_logits(labels=correct,
+        return tf.nn.softmax_cross_entropy_with_logits(labels=tf.stop_gradient(correct),
                                                        logits=predicted)
 
 #Runs CW/EAD attack with specified norm
 def cw_attack(file_name, norm, sess, num_image=10, cifar = False, tinyimagenet = False):
     np.random.seed(1215)
-    tf.set_random_seed(1215)
+    tf.compat.v1.set_random_seed(1215)
     random.seed(1215)
     if norm == '1':
         attack = EADL1

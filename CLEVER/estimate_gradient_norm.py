@@ -28,13 +28,13 @@ from CLEVER.shmemarray import ShmemRawArray, NpShmemArray
 from functools import partial
 from CLEVER.randsphere import randsphere
 from tensorflow.python.ops import gradients_impl
-from tensorflow.contrib.keras.api.keras.models import load_model
+from tensorflow.keras.models import load_model
 from train_resnet import ResidualStart, ResidualStart2
 from CLEVER.CNNModel import CNNModel
 
     
 def fn(correct, predicted):
-        return tf.nn.softmax_cross_entropy_with_logits(labels=correct,
+        return tf.nn.softmax_cross_entropy_with_logits(labels=tf.stop_gradient(correct),
                                                        logits=predicted)
 
 class EstimateLipschitz(object):
@@ -101,13 +101,13 @@ class EstimateLipschitz(object):
         
         ## placeholders: self.img, self.true_label, self.target_label
         # img is the placeholder for image input
-        self.img = tf.placeholder(shape = [None, model.image_size, model.image_size, model.num_channels], dtype = tf.float32)
+        self.img = tf.compat.v1.placeholder(shape = [None, model.image_size, model.image_size, model.num_channels], dtype = tf.float32)
         # output is the output tensor of the entire network
         self.output = model.predict(self.img)
         # create the graph to compute gradient
         # get the desired true label and target label
-        self.true_label = tf.placeholder(dtype = tf.int32, shape = [])
-        self.target_label = tf.placeholder(dtype = tf.int32, shape = [])
+        self.true_label = tf.compat.v1.placeholder(dtype = tf.int32, shape = [])
+        self.target_label = tf.compat.v1.placeholder(dtype = tf.int32, shape = [])
         true_output = self.output[:, self.true_label]
         target_output = self.output[:, self.target_label]
         # get the difference
@@ -127,7 +127,7 @@ class EstimateLipschitz(object):
             ## xs: a list of tensors that we should construct the Hessian over
             ## v: a list of tensors with the same shape as xs that we want to multiply by the Hessian
             # self.randv: shape = (Nimg,28,28,1) (the v in _hessian_vector_product)
-            self.randv = tf.placeholder(shape = [None, model.image_size, model.image_size, model.num_channels], dtype = tf.float32)
+            self.randv = tf.compat.v1.placeholder(shape = [None, model.image_size, model.image_size, model.num_channels], dtype = tf.float32)
             # hv_op_tmp: shape = (Nimg,28,28,1) for mnist, same as self.img (the xs in _hessian_vector_product)
             hv_op_tmp = gradients_impl._hessian_vector_product(self.objective, [self.img], [self.randv])[0]
             # hv_op_rs: reshape hv_op_tmp to hv_op_rs whose shape = (Nimg, 784) for mnist
@@ -177,10 +177,10 @@ class EstimateLipschitz(object):
 
             it = tf.constant(0)
             # compute largest abs eigenvalue
-            result = tf.while_loop(cond, body, [it, self.randv, self.vhv_op, self.eig_est, tf.constant(0.0)])
+            result = tf.while_loop(cond=cond, body=body, loop_vars=[it, self.randv, self.vhv_op, self.eig_est, tf.constant(0.0)])
             # compute largest neg eigenvalue
-            self.shiftconst = tf.placeholder(shape = (), dtype = tf.float32)
-            result_1 = tf.while_loop(cond, body, [it, self.randv, self.vhv_op, self.eig_est, self.shiftconst])
+            self.shiftconst = tf.compat.v1.placeholder(shape = (), dtype = tf.float32)
+            result_1 = tf.while_loop(cond=cond, body=body, loop_vars=[it, self.randv, self.vhv_op, self.eig_est, self.shiftconst])
 
             # computing largest abs eig value and save result
             self.it = result[0]

@@ -80,11 +80,11 @@ class EADL1:
         self.const = tf.Variable(np.zeros(batch_size), dtype=tf.float32)
 
         # and here's what we use to assign them
-        self.assign_timg = tf.placeholder(tf.float32, shape)
-        self.assign_newimg = tf.placeholder(tf.float32, shape)
-        self.assign_slack = tf.placeholder(tf.float32, shape)
-        self.assign_tlab = tf.placeholder(tf.float32, (batch_size,num_labels))
-        self.assign_const = tf.placeholder(tf.float32, [batch_size])
+        self.assign_timg = tf.compat.v1.placeholder(tf.float32, shape)
+        self.assign_newimg = tf.compat.v1.placeholder(tf.float32, shape)
+        self.assign_slack = tf.compat.v1.placeholder(tf.float32, shape)
+        self.assign_tlab = tf.compat.v1.placeholder(tf.float32, (batch_size,num_labels))
+        self.assign_const = tf.compat.v1.placeholder(tf.float32, [batch_size])
         
         self.global_step = tf.Variable(0, trainable=False)
         self.global_step_t = tf.cast(self.global_step, tf.float32)
@@ -102,8 +102,8 @@ class EADL1:
 
         self.assign_newimg = tf.multiply(cond1,upper)+tf.multiply(cond2,self.timg)+tf.multiply(cond3,lower)
         self.assign_slack = self.assign_newimg+tf.multiply(self.zt, self.assign_newimg-self.newimg)
-        self.setter = tf.assign(self.newimg, self.assign_newimg)
-        self.setter_y = tf.assign(self.slack, self.assign_slack)
+        self.setter = tf.compat.v1.assign(self.newimg, self.assign_newimg)
+        self.setter_y = tf.compat.v1.assign(self.slack, self.assign_slack)
         """--------------------------------"""
         # prediction BEFORE-SOFTMAX of the model
         self.output = model.predict(self.newimg)
@@ -158,11 +158,11 @@ class EADL1:
         print("self.real = ", self.real)
         print("self.other = ", self.other)
         
-        self.learning_rate = tf.train.polynomial_decay(self.LEARNING_RATE, self.global_step, self.MAX_ITERATIONS, 0, power=0.5) 
-        start_vars = set(x.name for x in tf.global_variables())
-        optimizer = tf.train.GradientDescentOptimizer(self.learning_rate)
+        self.learning_rate = tf.compat.v1.train.polynomial_decay(self.LEARNING_RATE, self.global_step, self.MAX_ITERATIONS, 0, power=0.5) 
+        start_vars = set(x.name for x in tf.compat.v1.global_variables())
+        optimizer = tf.compat.v1.train.GradientDescentOptimizer(self.learning_rate)
         self.train = optimizer.minimize(self.loss_opt, var_list=[self.slack], global_step=self.global_step)
-        end_vars = tf.global_variables()
+        end_vars = tf.compat.v1.global_variables()
         new_vars = [x for x in end_vars if x.name not in start_vars]
 
         # these are the variables to initialize when we run
@@ -171,7 +171,7 @@ class EADL1:
         self.setup.append(self.tlab.assign(self.assign_tlab))
         self.setup.append(self.const.assign(self.assign_const))
         
-        self.init = tf.variables_initializer(var_list=[self.global_step]+[self.slack]+[self.newimg]+new_vars)
+        self.init = tf.compat.v1.variables_initializer(var_list=[self.global_step]+[self.slack]+[self.newimg]+new_vars)
 
     def attack(self, imgs, targets):
         """

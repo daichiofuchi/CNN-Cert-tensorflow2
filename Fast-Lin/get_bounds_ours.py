@@ -14,7 +14,7 @@ Copyright (C) 2018, Lily Weng  <twweng@mit.edu>
 from numba import jit
 import numpy as np
 from get_bounds_others import get_layer_bound_LP
-from tensorflow.contrib.keras.api.keras.models import load_model
+from tensorflow.keras.models import load_model
 
 # use dictionary to save weights and bias
 # use list to save "transposed" weights and bias

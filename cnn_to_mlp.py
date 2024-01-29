@@ -12,9 +12,10 @@ Copyright (C) 2018, Akhilan Boopathy <akhilan@mit.edu>
 
 from tensorflow.keras.models import load_model
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Flatten, Conv2D, Lambda
+from tensorflow.keras.layers import Dense, Activation, Flatten, Conv2D, Lambda
+from tensorflow.keras.callbacks import LambdaCallback
 from tensorflow.keras.optimizers import SGD, Adam
-
+from tensorflow.keras import backend as K
 
 import numpy as np
 from setup_mnist import MNIST
@@ -68,7 +69,7 @@ def get_weights(file_name, inp_shape=(28,28,1)):
     return eq_weights, new_params
 
 def fn(correct, predicted):
-        return tf.nn.softmax_cross_entropy_with_logits(labels=correct,
+        return tf.nn.softmax_cross_entropy_with_logits(labels=tf.stop_gradient(correct),
                                                        logits=predicted)
 
 #Main function to convert CNN to MLP model

@@ -55,11 +55,11 @@ def collect_gradients(dataset, model_name, norm, numimg=10):
     from setup_tinyimagenet import tinyImagenet
 
     np.random.seed(1215)
-    tf.set_random_seed(1215)
+    tf.compat.v1.set_random_seed(1215)
     random.seed(1215)
-    config = tf.ConfigProto()
+    config = tf.compat.v1.ConfigProto()
     config.gpu_options.allow_growth=True
-    with tf.Session(config=config) as sess:
+    with tf.compat.v1.Session(config=config) as sess:
         clever_estimator.sess = sess
         # returns the input tensor and output prediction vector
         img, output, model = clever_estimator.load_model(dataset, model_name, batch_size = 0, compute_slope = False, order = 1)
