@@ -69,8 +69,8 @@ class MNIST:
         self.validation_labels = train_labels[:VALIDATION_SIZE]
         self.train_data = train_data[VALIDATION_SIZE:]
         self.train_labels = train_labels[VALIDATION_SIZE:]
-        print(" ========= data type ============")
-        print("data type = {}".format(self.test_data))
+        # print(" ========= data type ============")
+        # print("data type = {}".format(self.test_data))
         
 
 class MNISTModel:
