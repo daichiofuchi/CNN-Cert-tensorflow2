@@ -47,17 +47,26 @@ class MNIST:
 
                 urllib.request.urlretrieve('http://yann.lecun.com/exdb/mnist/' + name, "data/"+name)
 
-        train_data = extract_data("data/train-images-idx3-ubyte.gz", 60000)
-        train_labels = extract_labels("data/train-labels-idx1-ubyte.gz", 60000)
-        self.test_data = extract_data("data/t10k-images-idx3-ubyte.gz", 10000)
-        self.test_labels = extract_labels("data/t10k-labels-idx1-ubyte.gz", 10000)
+        from tensorflow.keras.datasets import mnist
         
+        # MNISTデータセットをロードする
+        (train_data, train_labels), (test_data, test_labels) = mnist.load_data()
+        
+        # データを前処理する
+        train_data = train_data.reshape((60000, 28, 28, 1)).astype('float32') / 255
+        test_data = test_data.reshape((10000, 28, 28, 1)).astype('float32') / 255
+        
+        train_labels = keras.utils.to_categorical(train_labels, 10)
+        test_labels = keras.utils.to_categorical(test_labels, 10)
+        
+        # 検証データセットのサイズを定義
         VALIDATION_SIZE = 5000
         
-        self.validation_data = train_data[:VALIDATION_SIZE, :, :, :]
-        self.validation_labels = train_labels[:VALIDATION_SIZE]
-        self.train_data = train_data[VALIDATION_SIZE:, :, :, :]
-        self.train_labels = train_labels[VALIDATION_SIZE:]
+        # 訓練データと検証データに分割
+        validation_data = train_data[:VALIDATION_SIZE]
+        validation_labels = train_labels[:VALIDATION_SIZE]
+        train_data = train_data[VALIDATION_SIZE:]
+        train_labels = train_labels[VALIDATION_SIZE:]
         #print(" ========= data type ============")
         #print("data type = {}".format(self.test_data))
         
