@@ -48,20 +48,22 @@ class MNIST:
                 urllib.request.urlretrieve('http://yann.lecun.com/exdb/mnist/' + name, "data/"+name)
 
         from tensorflow.keras.datasets import mnist
-        
+        from tensorflow.keras.utils import to_categorical
+
+
         # MNISTデータセットをロードする
         (train_data, train_labels), (test_data, test_labels) = mnist.load_data()
-        
+
         # データを前処理する
         train_data = train_data.reshape((60000, 28, 28, 1)).astype('float32') / 255
         test_data = test_data.reshape((10000, 28, 28, 1)).astype('float32') / 255
-        
-        train_labels = keras.utils.to_categorical(train_labels, 10)
-        test_labels = keras.utils.to_categorical(test_labels, 10)
-        
+
+        train_labels = to_categorical(train_labels, 10)
+        test_labels = to_categorical(test_labels, 10)
+
         # 検証データセットのサイズを定義
         VALIDATION_SIZE = 5000
-        
+
         # 訓練データと検証データに分割
         validation_data = train_data[:VALIDATION_SIZE]
         validation_labels = train_labels[:VALIDATION_SIZE]
